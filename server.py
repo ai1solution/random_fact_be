@@ -1,13 +1,21 @@
-from flask import Flask, jsonify
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 import requests
-from utils import SERPAPI_API_KEY, DEFAULT_IMAGE_URL  # <-- import from utils.py
-from flask_cors import CORS
+from utils import SERPAPI_API_KEY, DEFAULT_IMAGE_URL  # import from utils.py
 
+app = FastAPI()
 
-app = Flask(__name__)
-CORS(app)
+# Allow CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # You can restrict origins here if needed
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-def search_image_url(query):
+def search_image_url(query: str):
     try:
         params = {
             "engine": "google",
@@ -24,8 +32,8 @@ def search_image_url(query):
         print(f"Image search failed: {e}")
     return None
 
-@app.route('/fact', methods=['GET'])
-def get_fact():
+@app.get("/fact")
+async def get_fact():
     try:
         fact_response = requests.get('https://uselessfacts.jsph.pl/random.json')
         fact_response.raise_for_status()
@@ -36,12 +44,13 @@ def get_fact():
         if not image_url:
             image_url = DEFAULT_IMAGE_URL
 
-        return jsonify({
+        return JSONResponse(content={
             "fact": fact_text,
             "image_url": image_url
         })
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return JSONResponse(content={"error": str(e)}, status_code=500)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
