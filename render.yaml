@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: random_fact_be
+    runtime: python
+    startCommand: python server.py --host 0.0.0.0 --port $PORT
+    plan: free
