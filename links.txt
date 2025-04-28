@@ -1,0 +1,3 @@
+def img link : https://ibb.co/81mTf6g
+Random fact api : GET https://uselessfacts.jsph.pl/random.json
+SERP API KEY : 37298880d0fcef3adfd0564c3a7cca6fd95b1077fa33677fb1cc5fd1ee21cfb6
