@@ -1,8 +1,11 @@
 from flask import Flask, jsonify
 import requests
 from utils import SERPAPI_API_KEY, DEFAULT_IMAGE_URL  # <-- import from utils.py
+from flask_cors import CORS
+
 
 app = Flask(__name__)
+CORS(app)
 
 def search_image_url(query):
     try:
