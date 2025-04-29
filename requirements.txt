@@ -3,4 +3,5 @@ requests
 python-dotenv
 flask-cors
 uvicorn
+gunicorn
 fastapi

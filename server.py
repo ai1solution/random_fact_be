@@ -40,9 +40,9 @@ async def get_fact():
         fact_data = fact_response.json()
         fact_text = fact_data.get('text', 'No fact found')
 
-        image_url = search_image_url(fact_text)
-        if not image_url:
-            image_url = DEFAULT_IMAGE_URL
+        # image_url = search_image_url(fact_text)
+        # if not image_url:
+        image_url = DEFAULT_IMAGE_URL
 
         return JSONResponse(content={
             "fact": fact_text,
@@ -53,4 +53,4 @@ async def get_fact():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=5000)
