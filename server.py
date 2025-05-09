@@ -19,24 +19,35 @@ app.add_middleware(
 class AdLog(BaseModel):
     adType: str
 
+# In-memory IP counter
+ip_counter = {}
+
 @app.post("/api/log-impression")
 async def log_impression(request: Request, ad: AdLog):
-    # Try to get IP from headers (for proxied requests)
+# Get client IP
     forwarded = request.headers.get("x-forwarded-for")
     client_ip = forwarded.split(",")[0] if forwarded else request.client.host
 
-    # Logging logic
-    if client_ip.startswith("127.") or client_ip == "localhost":
-        log_type = "[LOCAL]"
-    elif client_ip.startswith("192.168.") or client_ip.startswith("10."):
-        log_type = "[INTERNAL]"
-    elif client_ip == "203.0.113.42":  # Replace with your specific IP
-        log_type = "[SPECIFIC IP]"
+    # Count requests from this IP
+    if client_ip in ip_counter:
+        ip_counter[client_ip] += 1
     else:
-        log_type = "[PUBLIC]"
+        ip_counter[client_ip] = 1
 
-    print(f"{log_type} Ad viewed from {client_ip}, type: {ad.adType}")
-    return {"status": "logged"}
+    # Logging
+    print(f"[{client_ip}] viewed ad type '{ad.adType}' ({ip_counter[client_ip]} times)")
+
+    # Print the full IP map
+    print("Current IP count map:")
+    for ip, count in ip_counter.items():
+        print(f"  {ip}: {count}")
+
+    return {
+        "status": "logged",
+        "client_ip": client_ip,
+        "count": ip_counter[client_ip],
+        "ip_map": ip_counter
+    }
 
 def search_image_url(query: str):
     try:
