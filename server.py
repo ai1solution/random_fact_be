@@ -55,6 +55,16 @@ def search_image_url(query: str):
         print(f"Image search failed: {e}")
     return None
 
+@app.get("/health-check")
+async def get_health():
+    try:
+        return JSONResponse({
+            "Health check status": "Success"
+        })
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=500)
+
+
 @app.get("/fact")
 async def get_fact():
     try:
