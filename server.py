@@ -39,7 +39,7 @@ async def log_impression(request: Request, ad: AdLog):
 
     # Print the full IP map
     print("Current IP count map:")
-    distinct_count
+    distinct_count = 0
     for ip, count in ip_counter.items():
         distinct_count += 1
         print(f"  {ip}: {count}")
